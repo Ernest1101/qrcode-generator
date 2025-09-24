@@ -5,14 +5,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>QR Code Generator</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📱</text></svg>">
 </head>
 <body>
   <div class="container">
     <h1>Генератор QR-кода</h1>
-    <input type="text" id="text" placeholder="Введите URL или текст" />
+    <textarea id="text" placeholder="Введите URL, текст, Wi-Fi данные, контакт и т.д."></textarea>
+    <div class="controls">
+      <label>Размер: <input type="range" id="size" min="100" max="500" value="250"></label>
+      <span id="size-value">250×250</span>
+    </div>
+    <div class="controls">
+      <label>Цвет QR: <input type="color" id="fg-color" value="#000000"></label>
+      <label>Фон: <input type="color" id="bg-color" value="#ffffff"></label>
+    </div>
     <button id="generate">Создать QR-код</button>
     <div id="qrcode"></div>
-    <a id="download" style="display:none;">Скачать QR-код</a>
+    <div class="actions">
+      <a id="download" style="display:none;">Скачать PNG</a>
+      <button id="copy-link" style="display:none;">Копировать ссылку</button>
+    </div>
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script src="script.js"></script>
