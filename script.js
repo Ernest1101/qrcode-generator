@@ -1,19 +1,45 @@
-document.getElementById('generate').addEventListener('click', function () {
-  const text = document.getElementById('text').value.trim();
-  const qrcodeContainer = document.getElementById('qrcode');
-  const downloadLink = document.getElementById('download');
+const textInput = document.getElementById('text');
+const sizeSlider = document.getElementById('size');
+const sizeValue = document.getElementById('size-value');
+const fgColorInput = document.getElementById('fg-color');
+const bgColorInput = document.getElementById('bg-color');
+const generateBtn = document.getElementById('generate');
+const qrcodeContainer = document.getElementById('qrcode');
+const downloadLink = document.getElementById('download');
+const copyLinkBtn = document.getElementById('copy-link');
+
+let currentQRCode = null;
+
+sizeSlider.addEventListener('input', () => {
+  sizeValue.textContent = `${sizeSlider.value}×${sizeSlider.value}`;
+});
+
+generateBtn.addEventListener('click', generateQR);
+
+textInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+    generateQR();
+  }
+});
+
+function generateQR() {
+  const text = textInput.value.trim();
+  if (!text) return;
 
   qrcodeContainer.innerHTML = '';
   downloadLink.style.display = 'none';
+  copyLinkBtn.style.display = 'none';
 
-  if (!text) return;
+  const size = parseInt(sizeSlider.value);
+  const fgColor = fgColorInput.value;
+  const bgColor = bgColorInput.value;
 
-  const qrcode = new QRCode(qrcodeContainer, {
+  currentQRCode = new QRCode(qrcodeContainer, {
     text: text,
-    width: 200,
-    height: 200,
-    colorDark: '#000000',
-    colorLight: '#ffffff',
+    width: size,
+    height: size,
+    colorDark: fgColor,
+    colorLight: bgColor,
     correctLevel: QRCode.CorrectLevel.H
   });
 
@@ -24,6 +50,22 @@ document.getElementById('generate').addEventListener('click', function () {
       downloadLink.href = imageUrl;
       downloadLink.download = 'qrcode.png';
       downloadLink.style.display = 'inline-block';
+      copyLinkBtn.style.display = 'inline-block';
     }
   }, 100);
+}
+
+copyLinkBtn.addEventListener('click', () => {
+  const text = textInput.value.trim();
+  if (text) {
+    navigator.clipboard.writeText(text).then(() => {
+      const originalText = copyLinkBtn.textContent;
+      copyLinkBtn.textContent = 'Скопировано!';
+      setTimeout(() => {
+        copyLinkBtn.textContent = originalText;
+      }, 1500);
+    });
+  }
 });
+
+generateQR();
